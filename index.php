@@ -173,7 +173,7 @@
             </div>
 
             <div class="footer-bottom">
-                <i class="fa fa-copyright"></i> Copyright &copy; <a href="<?=$config[copyrightUrl]?>"><?=$config[copyrightName]?></a> 2014, <a href="./admin">Admin</a>
+                <i class="fa fa-copyright"></i> Copyright &copy; <a href="<?=$config[copyrightUrl]?>"><?=$config[copyrightName]?></a> 2016, <a href="./admin">Admin</a>
             </div>
         </footer>
     </div> <!-- Container -->
