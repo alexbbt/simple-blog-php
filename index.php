@@ -90,7 +90,7 @@
 <?php
         // Get first paragraph of the current blog
         $text = file_get_contents('./assets/blogs/'. $blog[url] .'.html');
-        if ($text == '') {
+        if ($text != '') {
             $doc = new DOMDocument;
             $doc -> loadHTML($text);
             $xml = simplexml_import_dom($doc);
