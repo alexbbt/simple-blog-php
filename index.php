@@ -90,14 +90,15 @@
 <?php
         // Get first paragraph of the current blog
         $text = file_get_contents('./assets/blogs/'. $blog[url] .'.html');
-        $doc = new DOMDocument;
-        $doc -> loadHTML($text);
-        $xml = simplexml_import_dom($doc);
-        $json = json_encode($xml);
-        $array = json_decode($json,TRUE);
+        if (!empty($text)) {
+            $doc = new DOMDocument;
+            $doc -> loadHTML($text);
+            $xml = simplexml_import_dom($doc);
+            $json = json_encode($xml);
+            $array = json_decode($json,TRUE);
 
-        echo ($array[body][p][0]);
-
+            echo ($array[body][p][0]);
+        }
 ?>
                         </p>
                         <div class="read-more"><a href="./<?=$blog[url]?>">Continue Reading</a></div>
