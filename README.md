@@ -13,3 +13,12 @@ Getting Started
  8. Edit the Admin `.htpasswd` file found at `/admin/.htpasswd`
 	 9. REQUIRED:  Password must be hashed! Create file here [http://www.htaccesstools.com/htpasswd-generator/](http://www.htaccesstools.com/htpasswd-generator/)
  10. At this point the everything can be managed via the web portal
+
+Example
+-------
+A working example can be found here: [https://www.bell-towne.com/blog_beta](https://www.bell-towne.com/blog_beta)
+You can access the Admin page, but nothing will be saved.
+
+Live Blog
+-------
+My active blog using this system can be found here: [https://blog.bell-towne.com/](https://blog.bell-towne.com/)
