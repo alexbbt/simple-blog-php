@@ -1,0 +1,18 @@
+Options -Indexes
+RewriteEngine On
+
+RewriteCond %(REQUEST_FILENAME) !-f
+RewriteCond %(REQUEST_FILENAME) !-d
+RewriteRule ^((?!admin).[a-z0-9-]+)$ ./?blog=$1 [L]
+
+RewriteCond %(REQUEST_FILENAME) !-f
+RewriteCond %(REQUEST_FILENAME) !-d
+RewriteRule ^admin/site$ ./admin/site.php [L]
+
+RewriteCond %(REQUEST_FILENAME) !-f
+RewriteCond %(REQUEST_FILENAME) !-d
+RewriteRule ^admin/new$ ./admin/edit.php?method=new [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^admin/edit/([a-z0-9-]+)$ ./admin/edit.php?method=edit&blog=$1 [L]

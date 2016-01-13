@@ -1,0 +1,7 @@
+# please read this to make this file:
+# http://www.htaccesstools.com/htaccess-authentication/
+
+AuthType Basic
+AuthName "Admin Access"
+AuthUserFile /home/alexbbt/public_html/blog_beta/admin/.htpasswd
+Require valid-user
