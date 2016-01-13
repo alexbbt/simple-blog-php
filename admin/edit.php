@@ -38,10 +38,6 @@
             <label for="">Title</label>
             <input type="text" class="form-control" id="title" placeholder="Blog Title" value="<?=$blog['title']?>">
           </div>
-          <div class="form-group col-xs-12">
-            <label for="">Subtitle</label>
-            <input type="text" class="form-control" id="subtitle" placeholder="Little bit longer almost a description" value="<?=$blog['subtitle']?>">
-          </div>
           <div class="form-group col-xs-12 col-sm-6">
             <label for="">Author</label>
             <input type="text" class="form-control" id="author" placeholder="John Appleseed" value="<?=$blog['author']?>">
@@ -108,7 +104,6 @@
       $.post( "<?=$config[blogUrl]?>/admin/save.php?save=true", 
         { 
           title: $('#title').val(),
-          subtitle: $('#subtitle').val(),
           author: $('#author').val(),
           url: $('#url').val(),
           saveAs: $('#saveAs').is(':checked'),

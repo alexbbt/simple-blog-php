@@ -12,7 +12,6 @@
 	if (!empty($_GET['save'])) {
 		// Return if missing param
 		if(empty($_POST['title'])  		||
-		   empty($_POST['subtitle'])	||
 		   empty($_POST['author']) 		||
 		   empty($_POST['url'])				||
 		   empty($_POST['text']))
@@ -21,7 +20,6 @@
 			return false;
 	   }
 		$title = $_POST['title'];
-		$subtitle = $_POST['subtitle'];
 		$author = $_POST['author'];
 		$authorUrl = $_POST['url'];
 		$saveAs = $_POST['saveAs'] == 'true'; // Boolean
@@ -43,7 +41,6 @@
 		// Write blog to array
 		$blogs[$saveTitle] = array(
 			"title" => $title,
-			"subtitle" => $subtitle,
 			"author" => $author,
 			"authorUrl" => $authorUrl,
 			"timestamp" => $timestamp,
