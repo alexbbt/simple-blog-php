@@ -90,8 +90,8 @@
 <?php
         // Get first paragraph of the current blog
         $text = file_get_contents('./assets/blogs/'. $blog[url] .'.html');
-        if (!empty($text)) {
-            $doc = new DOMDocument;
+        $doc = new DOMDocument;
+        if (!empty($doc)) {
             $doc -> loadHTML($text);
             $xml = simplexml_import_dom($doc);
             $json = json_encode($xml);
