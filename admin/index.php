@@ -37,7 +37,6 @@
         <table class="table table-striped table-condensed">
           <thead>
             <th>Title</th>
-            <th>Subtitle</th>
             <th>Author</th>
             <th>Author Website</th>
             <th>Created</th>
@@ -50,7 +49,6 @@
 ?>
             <tr>
               <td><?=$blog[title]?></td>
-              <td><?=$blog[subtitle]?></td>
               <td><?=$blog[author]?></td>
               <td><?=$blog[authorUrl]?></td>
               <td><?=date('F  d, Y', $blog[timestamp])?></td>
