@@ -33,6 +33,7 @@
 
     <meta name="description" content="">
     <meta name="author" content="">
+    <link rel="icon" type="image/png" href="./assets/images/light-bulb.png">
 
     <title><?=$config[title]?></title>
 
