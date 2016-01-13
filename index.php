@@ -105,6 +105,15 @@
                 </article>
 <?php
         }
+        if (count($blogs)==0) {
+?>
+                <article class="blog-post">
+                    <div class="blog-post-body">
+                        <p>There are no blog enteries at this time</p>
+                    </div>
+                </article>
+<?php
+        }
 ?>
             </div>
         </div>
