@@ -86,7 +86,7 @@
                 <article class="blog-post">
                     <div class="blog-post-body">
                         <h2><a href="./<?=$blog[url]?>"><?=$blog[title]?></a></h2>
-                        <div class="post-meta"><span>by <a href="./<?=$blog[authorUrl]?>"><?=$blog[author]?></a></span>/<span><i class="fa fa-clock-o"></i><?=date('F  d, Y', $blog[timestamp])?></span></div>
+                        <div class="post-meta"><span>by <a href="<?=$blog[authorUrl]?>"><?=$blog[author]?></a></span>/<span><i class="fa fa-clock-o"></i><?=date('F  d, Y', $blog[timestamp])?></span></div>
                         <p>
 <?php
         // Get first paragraph of the current blog
