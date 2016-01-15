@@ -1,7 +1,7 @@
 <?php
 
 	$oldTitle = $_POST['oldTitle'];
-	$oldTitle = str_replace(' ', '-', strtolower($oldTitle));
+	$oldTitle = special_repace($oldTitle);
 	
 	$blogsFile = '../assets/blogs/blogs.ini';
 	$configFile = '../assets/config/config.ini';
@@ -27,7 +27,7 @@
 		$text = $_POST['text'];
 
 		// Convert to url format
-		$saveTitle = str_replace(' ', '-', strtolower($title));
+		$saveTitle = special_repace($title);
 
 		// Current Timestamp
 		$timestamp = time();
@@ -107,6 +107,11 @@
 		print_r($blogs);
 		unlink('../assets/blogs/'.$blog.'.html');
 		return $blogs;
+	}
+
+	// Special Character Replacing
+	function special_repace($text) {
+		return preg_replace('/[\[\]\^\$\.\|\?\*\+\(\)\\~`\!@#%&_+={}\'\"<>:;,\ ]{1,}/', '', str_replace(' ', '-', strtolower($text)));
 	}
 
 	// Write out INI File
