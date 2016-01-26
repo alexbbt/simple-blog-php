@@ -4,9 +4,9 @@
 	$oldTitle = $_POST['oldTitle'];
 	$oldTitle = special_repace($oldTitle);
 
-  include './database.php'
+  include './database.php';
     
-  $db = new PDO('mysql:host='. $host .';dbname='. $dbname .';charset=utf8', ''. $username .'', ''. $password .'');
+  $db = new PDO('mysql:host='. $host .';dbname='. $dbname .';charset=utf8', $username, $password);
 		
 	// If save function
 	if (!empty($_GET['save'])) {

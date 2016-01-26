@@ -2,9 +2,9 @@
     // get the chosen blog, could be empty if it is the home page
     $blogTitle = $_GET['blog'];
 
-    include './admin/database.php'
+    include './admin/database.php';
     
-    $db = new PDO('mysql:host='. $host .';dbname='. $dbname .';charset=utf8', ''. $username .'', ''. $password .'');
+    $db = new PDO('mysql:host='. $host .';dbname='. $dbname .';charset=utf8', $username, $password);
 
     $config = $db->query('SELECT * FROM config')->fetch(PDO::FETCH_ASSOC);
 ?>

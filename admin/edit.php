@@ -1,9 +1,9 @@
 <?php
   $method = $_GET['method'];
   
-  include './database.php'
+  include './database.php';
     
-  $db = new PDO('mysql:host='. $host .';dbname='. $dbname .';charset=utf8', ''. $username .'', ''. $password .'');
+  $db = new PDO('mysql:host='. $host .';dbname='. $dbname .';charset=utf8', $username, $password);
 
 
   $config = $db->query('SELECT * FROM config')->fetch(PDO::FETCH_ASSOC);  
