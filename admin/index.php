@@ -1,8 +1,11 @@
 <?php
   $pageTitle = 'Blog Admin Page';
-  $blogs = parse_ini_file('../assets/blogs/blogs.ini');
-  $config = parse_ini_file('../assets/config/config.ini');
   
+  include './database.php'
+    
+  $db = new PDO('mysql:host='. $host .';dbname='. $dbname .';charset=utf8', ''. $username .'', ''. $password .'');
+
+  $config = $db->query('SELECT * FROM config')->fetch(PDO::FETCH_ASSOC);  
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,15 +25,6 @@
 </head>
 <body>
   <div class="container" style="padding-top:50px;">
-<?php
-    function cmp($a, $b) {
-        if ($a[timestamp] == $b[timestamp]) {
-                return 0;
-        }
-        return ($a[timestamp] > $b[timestamp]) ? -1 : 1;
-    }
-    usort($blogs,"cmp");
-?>
     <div class="row">
       <div class="col-xs-12">
         <legend>All Blog Enties</legend>
@@ -40,18 +34,22 @@
             <th>Author</th>
             <th>Author Website</th>
             <th>Created</th>
+            <th>Updated</th>
             <th>View</th>
             <th>Edit</th>
             <th>Delete</th>
           </thead>
 <?php
-    foreach ($blogs as $blog) {
+    // Loop over each blog
+    $blogs = $db->query('SELECT * FROM blogs')->fetchAll(PDO::FETCH_ASSOC);
+    foreach($blogs as $blog) {
 ?>
             <tr>
               <td><?=$blog[title]?></td>
               <td><?=$blog[author]?></td>
               <td><?=$blog[authorUrl]?></td>
-              <td><?=date('F  d, Y', $blog[timestamp])?></td>
+              <td><?=date('F  d, Y @ H:i:s', strtotime($blog[timestamp]))?></td>
+              <td><?=date('F  d, Y @ H:i:s', strtotime($blog[updated]))?></td>
               <td><p data-placement="top" data-toggle="tooltip" title="View"><a href="<?=$config[blogUrl]?>/<?=$blog[url]?>" class="btn btn-success btn-xs" data-title="View" data-toggle="modal"><span class="glyphicon glyphicon-eye-open"></span></a></p></td>
               <td><p data-placement="top" data-toggle="tooltip" title="Edit"><a href="./edit/<?=$blog[url]?>" class="btn btn-warning btn-xs" data-title="Edit" data-toggle="modal"><span class="glyphicon glyphicon-pencil"></span></button></p></td>
               <td><p data-placement="top" data-toggle="tooltip" title="Delete"><button onclick="deleteBlog('<?=$blog[url]?>')" class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal"><span class="glyphicon glyphicon-trash"></span></button></p></td>    

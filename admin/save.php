@@ -1,30 +1,34 @@
 <?php
+	// print_r($_POST);
 
 	$oldTitle = $_POST['oldTitle'];
 	$oldTitle = special_repace($oldTitle);
-	
-	$blogsFile = '../assets/blogs/blogs.ini';
-	$configFile = '../assets/config/config.ini';
 
-	$blogs = parse_ini_file($blogsFile);
-	
+  include './database.php'
+    
+  $db = new PDO('mysql:host='. $host .';dbname='. $dbname .';charset=utf8', ''. $username .'', ''. $password .'');
+		
 	// If save function
 	if (!empty($_GET['save'])) {
 		// Return if missing param
 		if(empty($_POST['title'])  		||
 		   empty($_POST['author']) 		||
-		   empty($_POST['url'])				||
+		   empty($_POST['url'])			||
+		   empty($_POST['preview'])		||
 		   empty($_POST['text']))
 		   {
 			echo "Something is missing!";
 			return false;
 	   }
-		$title = $_POST['title'];
-		$author = $_POST['author'];
-		$authorUrl = $_POST['url'];
+		$title = html_special_repace($_POST['title']);
+		$author = html_special_repace($_POST['author']);
+		$authorUrl = html_special_repace($_POST['url']);
+		$preview = html_special_repace($_POST['preview']);
 		$saveAs = $_POST['saveAs'] == 'true'; // Boolean
 		
-		$text = $_POST['text'];
+		$text = html_special_repace($_POST['text']);
+
+		print_r($preview);
 
 		// Convert to url format
 		$saveTitle = special_repace($title);
@@ -32,31 +36,35 @@
 		// Current Timestamp
 		$timestamp = time();
 
-		// If changing the Blog name
-		if (!$saveAs && !empty($_POST['oldTitle']) && strcmp($saveTitle, $oldTitle) != 0) {
-			$timestamp = $blogs[$oldTitle]['timestamp'];
-			$blogs = delete($blogs, $oldTitle);
+		// If new or changing the Blog name
+		if ($oldTitle == '' || $saveAs && !empty($_POST['oldTitle']) && strcmp($saveTitle, $oldTitle) != 0) {
+			echo 'new';
+			$success = $db->query("INSERT INTO `alexbbt_blog`.`blogs` (`title`, `author`, `authorUrl`, `preview`, `url`, `text`) 
+						VALUES ('". $title . "', '". $author ."', '". $authorUrl ."', '". $preview ."', '". $saveTitle ."', '". $text ."')"
+			);
+		} else {
+			echo 'save';
+			$success = $db->query("UPDATE `alexbbt_blog`.`blogs` 
+						SET `title` = '". $title . "',
+							`author` = '". $author ."',
+							`authorUrl` = '". $authorUrl ."',
+							`preview` = '". $preview ."',
+							`url` = '". $saveTitle ."',
+							`updated` = CURRENT_TIMESTAMP,
+							`text` = '" . $text . "'
+						WHERE `blogs`.`url` = '". $oldTitle ."'"
+			);
+		}		
+		print_r(($success) ? 'Success' : 'Failure');
+		if (!$success) {
+			print_r($db->errorInfo());
 		}
-
-		// Write blog to array
-		$blogs[$saveTitle] = array(
-			"title" => $title,
-			"author" => $author,
-			"authorUrl" => $authorUrl,
-			"timestamp" => $timestamp,
-			"url" => $saveTitle
-		);
-		// Write out Blogs file
-		write_ini_file($blogs, $blogsFile, TRUE);
-
-		// Save Blog HTML File
-		file_put_contents('../assets/blogs/'.$saveTitle.'.html', $text);
 
 	// If Delete Function
 	} else if (!empty($_GET['delete'])) {
-
-		$blogs = delete($blogs, $oldTitle);
-		write_ini_file($blogs, $blogsFile, TRUE);
+		$db->query("DELETE FROM `alexbbt_blog`.`blogs` 
+					WHERE `url` = '". $oldTitle ."'"
+				);
 
 	// If Site Settings Function
 	} else if (!empty($_GET['site'])) {
@@ -67,7 +75,7 @@
 		   empty($_POST['twitter']) 			||
 		   empty($_POST['facebook']) 			||
 		   empty($_POST['github']) 				||
-		   empty($_POST['copyrightName'])	||
+		   empty($_POST['copyrightName'])		||
 		   empty($_POST['copyrightUrl']))
 		   {
 			echo "Something is missing!";
@@ -82,78 +90,28 @@
 		$copyrightName = $_POST['copyrightName'];
 		$copyrightUrl = $_POST['copyrightUrl'];
 
-		// Recreate Config Array
-		$config = array(
-			"title" => $title,
-			"tagline" => $tagline,
-			"blogUrl" => $blogUrl,
-			"twitter" => $twitter,
-			"facebook" => $facebook,
-			"github" => $github,
-			"copyrightName" => $copyrightName,
-			"copyrightUrl" => $copyrightUrl
-		);
+		$sql = "UPDATE `alexbbt_blog`.`config` 
+					SET `title` = '". $title ."',
+						`tagline` = '". $tagline ."',
+						`blogUrl` = '". $blogUrl ."',
+						`twitter` = '". $twitter ."',
+						`facebook` = '". $facebook ."',
+						`github` = '". $github ."',
+						`copyrightName` = '". $copyrightName ."',
+						`copyrightUrl` = '". $copyrightUrl ."'
+					WHERE `config`.`id` = 1";
 
-		// Write out config file
-		write_ini_file($config, $configFile, FALSE);
-	}
-	
-	// Delete given blog
-	function delete($blogs, $blog) {
-		print_r($blogs);
-		print_r($blog);
-		print_r($blogs[$blog]);
-		unset($blogs[$blog]);
-		print_r($blogs);
-		unlink('../assets/blogs/'.$blog.'.html');
-		return $blogs;
+		$success = $db->query($sql);
+		print_r(($success) ? 'Success' : 'Failure');
+
 	}
 
 	// Special Character Replacing
 	function special_repace($text) {
 		return preg_replace('/[\[\]\^\$\.\|\?\*\+\(\)\\~`\!@#%&_+={}\'\"<>:;,\ ]{1,}/', '', str_replace(' ', '-', strtolower($text)));
 	}
-
-	// Write out INI File
-	function write_ini_file($assoc_arr, $path, $has_sections=FALSE) { 
-	    $content = ""; 
-	    if ($has_sections) { 
-	        foreach ($assoc_arr as $key=>$elem) { 
-	            $content .= "[".$key."]\n"; 
-	            foreach ($elem as $key2=>$elem2) { 
-	                if(is_array($elem2)) 
-	                { 
-	                    for($i=0;$i<count($elem2);$i++) 
-	                    { 
-	                        $content .= $key2."[] = \"".$elem2[$i]."\"\n"; 
-	                    } 
-	                } 
-	                else if($elem2=="") $content .= $key2." = \n"; 
-	                else $content .= " ".$key."[".$key2."] = \"".$elem2."\"\n"; 
-	            } 
-	        } 
-	    } 
-	    else { 
-	        foreach ($assoc_arr as $key=>$elem) { 
-	            if(is_array($elem)) 
-	            { 
-	                for($i=0;$i<count($elem);$i++) 
-	                { 
-	                    $content .= $key."[] = \"".$elem[$i]."\"\n"; 
-	                } 
-	            } 
-	            else if($elem=="") $content .= $key." = \n"; 
-	            else $content .= $key." = \"".$elem."\"\n"; 
-	        } 
-	    } 
-
-	    if (!$handle = fopen($path, 'w')) { 
-	        return false; 
-	    }
-
-	    $success = fwrite($handle, $content);
-	    fclose($handle); 
-
-	    return $success; 
+	// html and special Character Replacing
+	function html_special_repace($text) {
+		return htmlspecialchars(str_replace('', '', str_replace("'", "''", $text)));
 	}
 ?>

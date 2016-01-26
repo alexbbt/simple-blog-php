@@ -1,6 +1,12 @@
 <?php
   $pageTitle = 'Site Settings';
-  $config = parse_ini_file('../assets/config/config.ini');  
+
+  include './database.php'
+    
+  $db = new PDO('mysql:host='. $host .';dbname='. $dbname .';charset=utf8', ''. $username .'', ''. $password .'');
+
+  $config = $db->query('SELECT * FROM config')->fetch(PDO::FETCH_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

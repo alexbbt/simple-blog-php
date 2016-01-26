@@ -1,26 +1,12 @@
 <?php
-    // set your timezone
-    date_default_timezone_set('UTC');
-
-    // config files
-    $config = parse_ini_file('./assets/config/config.ini');
-    $blogs = parse_ini_file('./assets/blogs/blogs.ini');
-
     // get the chosen blog, could be empty if it is the home page
     $blogTitle = $_GET['blog'];
-    
-    // if the blog was specified but does not excist, then redirect to home
-    if ($blogTitle != '' && !file_exists('./assets/blogs/'.$blogTitle.'.html')) {
-        header( 'Location: ./' ) ;
-    }
 
-    // sort function by timestamp
-    function cmp($a, $b) {
-        if ($a[timestamp] == $b[timestamp]) {
-                return 0;
-        }
-        return ($a[timestamp] > $b[timestamp]) ? -1 : 1;
-    }
+    include './admin/database.php'
+    
+    $db = new PDO('mysql:host='. $host .';dbname='. $dbname .';charset=utf8', ''. $username .'', ''. $password .'');
+
+    $config = $db->query('SELECT * FROM config')->fetch(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,7 +58,6 @@
 <?php
     // True if home page
     if ($blogTitle == '') {
-        usort($blogs,"cmp");
 ?>
 
 
@@ -81,31 +66,20 @@
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
 <?php
         // Loop over each blog
-        foreach ($blogs as $blog) {
+        $blogs = $db->query('SELECT * FROM blogs')->fetchAll(PDO::FETCH_ASSOC);
+        foreach($blogs as $blog) {
 ?>
                 <article class="blog-post">
                     <div class="blog-post-body">
                         <h2><a href="./<?=$blog[url]?>"><?=$blog[title]?></a></h2>
-                        <div class="post-meta"><span>by <a href="<?=$blog[authorUrl]?>"><?=$blog[author]?></a></span>/<span><i class="fa fa-clock-o"></i><?=date('F  d, Y', $blog[timestamp])?></span></div>
-                        <p>
-<?php
-        // Get first paragraph of the current blog
-        $text = file_get_contents('./assets/blogs/'. $blog[url] .'.html');
-        $doc = new DOMDocument;
-        $doc -> loadHTML($text);
-        $xml = simplexml_import_dom($doc);
-        $json = json_encode($xml);
-        $array = json_decode($json,TRUE);
-
-        echo ($array[body][p][1]);
-?>
-                        </p>
+                        <div class="post-meta"><span>by <a href="<?=$blog[authorUrl]?>"><?=$blog[author]?></a></span>/<span><i class="fa fa-clock-o"></i><?=date('F  d, Y', strtotime($blog[timestamp]))?></span></div>
+                        <p><?=htmlspecialchars_decode($blog[preview])?></p>
                         <div class="read-more"><a href="./<?=$blog[url]?>">Continue Reading</a></div>
                     </div>
                 </article>
 <?php
         }
-        if (count($blogs)==0) {
+        if (count($blogs) == 0) {
 ?>
                 <article class="blog-post">
                     <div class="blog-post-body">
@@ -122,7 +96,7 @@
     // If blog is specified
     } else {
         // Get blog data from array
-        $blog = $blogs[$blogTitle];
+        $blog = $db->query("SELECT * FROM blogs WHERE url = '" . $blogTitle . "'")->fetch(PDO::FETCH_ASSOC);
 ?>
     
     <!-- Post Content -->
@@ -135,14 +109,8 @@
                             <div class="post-meta">
                                 <span>by <a href="<?=$blog[authorUrl]?>"><?=$blog[author]?></a></span>
                                 /
-                                <span><i class="fa fa-clock-o"></i><?=date('F  d, Y', $blog[timestamp])?></span></div>
-                            <div class="blog-post-text">
-<?php
-        // Get blog content and put on page
-        echo file_get_contents('./assets/blogs/'.$blogTitle.'.html');
-
-?>
-                            </div>
+                                <span><i class="fa fa-clock-o"></i><?=date('F  d, Y', strtotime($blog[timestamp]))?></span></div>
+                            <div class="blog-post-text"><?=htmlspecialchars_decode($blog[text])?></div>
                         </div>
                     </article>
                 </div>

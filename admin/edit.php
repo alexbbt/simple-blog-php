@@ -1,12 +1,17 @@
 <?php
   $method = $_GET['method'];
-  $config = parse_ini_file('../assets/config/config.ini');
+  
+  include './database.php'
+    
+  $db = new PDO('mysql:host='. $host .';dbname='. $dbname .';charset=utf8', ''. $username .'', ''. $password .'');
+
+
+  $config = $db->query('SELECT * FROM config')->fetch(PDO::FETCH_ASSOC);  
 
   if ($method == 'edit') {
     $pageTitle = 'Edit Blog Entry';
-    $blogs = parse_ini_file('../assets/blogs/blogs.ini');
     $blogTitle = $_GET['blog'];
-    $blog = $blogs[$blogTitle];
+    $blog = $db->query("SELECT * FROM blogs WHERE url = '" . $blogTitle . "'")->fetch(PDO::FETCH_ASSOC);
   } else {
     $pageTitle = 'New Blog Entry';
   }
@@ -46,6 +51,10 @@
             <label for="">Author Website</label>
             <input type="text" class="form-control" id="url" placeholder="www.apple.com" value="<?=$blog['authorUrl']?>">
           </div>
+          <div class="form-group col-xs-12">
+            <label for="">Preview Text</label>
+            <textarea id="preview" class="form-control" rows="3"><?=$blog['preview']?></textarea>
+          </div>
 <?php
     if ($method == 'edit') {
 ?>
@@ -73,7 +82,7 @@
         <div id="summernote">
 <?php
     if ($method == 'edit') {
-      echo file_get_contents($config[blogUrl].'/assets/blogs/'.$blogTitle.'.html');
+      echo htmlspecialchars_decode($blog[text]);
     }
 ?>
         </div>
@@ -105,6 +114,7 @@
         { 
           title: $('#title').val(),
           author: $('#author').val(),
+          preview: $('#preview').val(),
           url: $('#url').val(),
           saveAs: $('#saveAs').is(':checked'),
           oldTitle: "<?=$blog['title']?>",
