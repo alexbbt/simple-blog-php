@@ -87,7 +87,7 @@
           boolean: boolean
         }, 
         function( data ) {
-          console.log(data);
+          window.location.replace('./');
       });
     }
   </script>
