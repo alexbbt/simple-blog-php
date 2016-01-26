@@ -30,6 +30,7 @@
         <legend>All Blog Enties</legend>
         <table class="table table-striped table-condensed">
           <thead>
+            <th>Published</th>
             <th>Title</th>
             <th>Author</th>
             <th>Author Website</th>
@@ -45,6 +46,7 @@
     foreach($blogs as $blog) {
 ?>
             <tr>
+              <td><input onclick="publish('<?=$blog[url]?>', <?=($blog[published]) ? '0' : '1'?>)" type="checkbox" <?=($blog[published]) ? 'checked' : ''?>></td>
               <td><?=$blog[title]?></td>
               <td><?=$blog[author]?></td>
               <td><?=$blog[authorUrl]?></td>
@@ -72,10 +74,20 @@
       }
       $.post( "<?=$config[blogUrl]?>/admin/save.php?delete=true", 
         { 
-          oldTitle: blog,
+          oldTitle: blog
         }, 
         function( data ) {
           then();
+      });
+    }
+    var publish = function(blog, boolean) {
+      $.post( "<?=$config[blogUrl]?>/admin/save.php?publish=true", 
+        { 
+          oldTitle: blog,
+          boolean: boolean
+        }, 
+        function( data ) {
+          console.log(data);
       });
     }
   </script>

@@ -66,7 +66,7 @@
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
 <?php
         // Loop over each blog
-        $blogs = $db->query('SELECT * FROM blogs')->fetchAll(PDO::FETCH_ASSOC);
+        $blogs = $db->query('SELECT * FROM blogs WHERE `published` = 1')->fetchAll(PDO::FETCH_ASSOC);
         foreach($blogs as $blog) {
 ?>
                 <article class="blog-post">

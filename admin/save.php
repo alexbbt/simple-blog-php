@@ -1,5 +1,5 @@
 <?php
-	// print_r($_POST);
+	print_r($_POST);
 
 	$oldTitle = $_POST['oldTitle'];
 	$oldTitle = special_repace($oldTitle);
@@ -65,6 +65,23 @@
 		$db->query("DELETE FROM `alexbbt_blog`.`blogs` 
 					WHERE `url` = '". $oldTitle ."'"
 				);
+
+	// If Site Settings Function
+	} else if (!empty($_GET['publish'])) {
+		// Return if missing param
+		if(empty($_POST['oldTitle'])) {
+			echo "Something is missing!";
+			return false;
+	   }
+		$boolean = $_POST['boolean'];
+		$success = $db->query("UPDATE `alexbbt_blog`.`blogs` 
+					SET `published` = '". $boolean . "'
+					WHERE `url` = '". $oldTitle ."'"
+				);
+		print_r(($success) ? 'Success' : 'Failure');
+		if (!$success) {
+			print_r($db->errorInfo());
+		}
 
 	// If Site Settings Function
 	} else if (!empty($_GET['site'])) {
