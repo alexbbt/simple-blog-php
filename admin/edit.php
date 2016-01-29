@@ -7,6 +7,7 @@
 
 
   $config = $db->query('SELECT * FROM config')->fetch(PDO::FETCH_ASSOC);  
+  $authors = $db->query('SELECT * FROM authors')->fetchAll(PDO::FETCH_ASSOC);  
 
   if ($method == 'edit') {
     $pageTitle = 'Edit Blog Entry';
@@ -43,13 +44,18 @@
             <label for="">Title</label>
             <input type="text" class="form-control" id="title" placeholder="Blog Title" value="<?=$blog['title']?>">
           </div>
-          <div class="form-group col-xs-12 col-sm-6">
+          <div class="form-group col-xs-12">
             <label for="">Author</label>
-            <input type="text" class="form-control" id="author" placeholder="John Appleseed" value="<?=$blog['author']?>">
-          </div>
-          <div class="form-group col-xs-12 col-sm-6">
-            <label for="">Author Website</label>
-            <input type="text" class="form-control" id="url" placeholder="www.apple.com" value="<?=$blog['authorUrl']?>">
+            <select name="author" id="author" class="form-control" required="required">
+<?php
+foreach ($authors as $author) {
+?>
+              <option value="<?=$author[authorID]?>" <?=($author[authorID] == $blog[authorID]) ? 'selected' : '' ;?>><?=$author[authorName]?></option>
+<?php
+}
+
+?>
+            </select>
           </div>
           <div class="form-group col-xs-12">
             <label for="">Preview Text</label>
@@ -115,7 +121,6 @@
           title: $('#title').val(),
           author: $('#author').val(),
           preview: $('#preview').val(),
-          url: $('#url').val(),
           saveAs: $('#saveAs').is(':checked'),
           oldTitle: "<?=$blog['title']?>",
           text: $('#summernote').summernote('code')

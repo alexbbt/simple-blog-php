@@ -33,7 +33,6 @@
             <th>Published</th>
             <th>Title</th>
             <th>Author</th>
-            <th>Author Website</th>
             <th>Created</th>
             <th>Updated</th>
             <th>View</th>
@@ -42,17 +41,16 @@
           </thead>
 <?php
     // Loop over each blog
-    $blogs = $db->query('SELECT * FROM blogs')->fetchAll(PDO::FETCH_ASSOC);
+    $blogs = $db->query('SELECT * FROM `blogs` LEFT JOIN `authors` ON `blogs`.`authorID` = `authors`.`authorID` ORDER BY `timestamp` DESC')->fetchAll(PDO::FETCH_ASSOC);
     foreach($blogs as $blog) {
 ?>
             <tr>
               <td><input onclick="publish('<?=$blog[url]?>', <?=($blog[published]) ? '0' : '1'?>)" type="checkbox" <?=($blog[published]) ? 'checked' : ''?>></td>
               <td><?=$blog[title]?></td>
-              <td><?=$blog[author]?></td>
-              <td><?=$blog[authorUrl]?></td>
+              <td><?=$blog[authorName]?></td>
               <td><?=date('F  d, Y @ H:i:s', strtotime($blog[timestamp]))?></td>
               <td><?=date('F  d, Y @ H:i:s', strtotime($blog[updated]))?></td>
-              <td><p data-placement="top" data-toggle="tooltip" title="View"><a href="<?=$config[blogUrl]?>/<?=$blog[url]?>" class="btn btn-success btn-xs" data-title="View" data-toggle="modal"><span class="glyphicon glyphicon-eye-open"></span></a></p></td>
+              <td><p data-placement="top" data-toggle="tooltip" title="View"><a href="../<?=$blog[url]?>" class="btn btn-success btn-xs" data-title="View" data-toggle="modal"><span class="glyphicon glyphicon-eye-open"></span></a></p></td>
               <td><p data-placement="top" data-toggle="tooltip" title="Edit"><a href="./edit/<?=$blog[url]?>" class="btn btn-warning btn-xs" data-title="Edit" data-toggle="modal"><span class="glyphicon glyphicon-pencil"></span></button></p></td>
               <td><p data-placement="top" data-toggle="tooltip" title="Delete"><button onclick="deleteBlog('<?=$blog[url]?>')" class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal"><span class="glyphicon glyphicon-trash"></span></button></p></td>    
             </tr>
@@ -61,8 +59,9 @@
 ?>
         </table>
         <a href="<?=$config[blogUrl]?>" type="button" class="btn btn-default">Home</a>
-        <a href="<?=$config[blogUrl]?>/admin/site" type="button" class="btn btn-primary">Site Config</a>
-        <a href="<?=$config[blogUrl]?>/admin/new" type="button" class="btn btn-success">New</a>
+        <a href="<?=$config[blogUrl]?>admin/authors" type="button" class="btn btn-primary">Edit Authors List</a>
+        <a href="<?=$config[blogUrl]?>admin/site" type="button" class="btn btn-warning">Site Config</a>
+        <a href="<?=$config[blogUrl]?>admin/new" type="button" class="btn btn-success">New</a>
       </div>
     </div>
   </div>

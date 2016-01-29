@@ -6,6 +6,14 @@
     
     $db = new PDO('mysql:host='. $host .';dbname='. $dbname .';charset=utf8', $username, $password);
 
+    if ($blogTitle) {
+        // Get blog data from array
+        $blog = $db->query("SELECT * FROM `blogs` LEFT JOIN `authors` ON `blogs`.`authorID` = `authors`.`authorID` WHERE `url` = '" . $blogTitle . "'")->fetch(PDO::FETCH_ASSOC);
+        if (empty($blog)) {
+            header( 'Location: ../' ) ;
+        }
+    }
+
     $config = $db->query('SELECT * FROM config')->fetch(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
@@ -66,13 +74,13 @@
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
 <?php
         // Loop over each blog
-        $blogs = $db->query('SELECT * FROM blogs WHERE `published` = 1')->fetchAll(PDO::FETCH_ASSOC);
+        $blogs = $db->query('SELECT `title`, `url`, `authorName`, `authorURL`, `preview`, `timestamp` FROM `blogs` LEFT JOIN `authors` ON `blogs`.`authorID` = `authors`.`authorID` WHERE `published` = 1 ORDER BY `timestamp` DESC')->fetchAll(PDO::FETCH_ASSOC);
         foreach($blogs as $blog) {
 ?>
                 <article class="blog-post">
                     <div class="blog-post-body">
                         <h2><a href="./<?=$blog[url]?>"><?=$blog[title]?></a></h2>
-                        <div class="post-meta"><span>by <a href="<?=$blog[authorUrl]?>"><?=$blog[author]?></a></span>/<span><i class="fa fa-clock-o"></i><?=date('F  d, Y', strtotime($blog[timestamp]))?></span></div>
+                        <div class="post-meta"><span>by <a href="<?=$blog[authorURL]?>"><?=$blog[authorName]?></a></span>/<span><i class="fa fa-clock-o"></i><?=date('F  d, Y', strtotime($blog[timestamp]))?></span></div>
                         <p><?=htmlspecialchars_decode($blog[preview])?></p>
                         <div class="read-more"><a href="./<?=$blog[url]?>">Continue Reading</a></div>
                     </div>
@@ -95,8 +103,7 @@
 
     // If blog is specified
     } else {
-        // Get blog data from array
-        $blog = $db->query("SELECT * FROM blogs WHERE url = '" . $blogTitle . "'")->fetch(PDO::FETCH_ASSOC);
+
 ?>
     
     <!-- Post Content -->
@@ -107,10 +114,19 @@
                         <div class="blog-post-body">
                             <h2><?=$blog[title]?></h2>
                             <div class="post-meta">
-                                <span>by <a href="<?=$blog[authorUrl]?>"><?=$blog[author]?></a></span>
+                                <span>by <a href="<?=$blog[authorURL]?>"><?=$blog[authorName]?></a></span>
                                 /
                                 <span><i class="fa fa-clock-o"></i><?=date('F  d, Y', strtotime($blog[timestamp]))?></span></div>
-                            <div class="blog-post-text"><?=htmlspecialchars_decode($blog[text])?></div>
+                            <div class="blog-post-text">
+<?php
+        if ($blog[updated]) {
+?>
+                                <div class="updated">Updated on <?=date('F  d, Y', strtotime($blog[updated]))?></div>
+<?php
+        }
+?>
+                                <?=htmlspecialchars_decode($blog[text])?>
+                            </div>
                         </div>
                     </article>
                 </div>
@@ -141,7 +157,7 @@
             </div>
 
             <div class="footer-bottom">
-                <i class="fa fa-copyright"></i> Copyright &copy; <a href="<?=$config[copyrightUrl]?>"><?=$config[copyrightName]?></a> 2016, <a href="./admin">Admin</a>
+                <i class="fa fa-copyright"></i> Copyright &copy; <a href="<?=$config[copyrightUrl]?>"><?=$config[copyrightName]?></a> <?=$config[copyrightYear]?>, <a href="./admin">Admin</a>
             </div>
         </footer>
     </div> <!-- Container -->

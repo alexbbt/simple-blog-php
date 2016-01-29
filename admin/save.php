@@ -13,7 +13,6 @@
 		// Return if missing param
 		if(empty($_POST['title'])  		||
 		   empty($_POST['author']) 		||
-		   empty($_POST['url'])			||
 		   empty($_POST['preview'])		||
 		   empty($_POST['text']))
 		   {
@@ -22,7 +21,6 @@
 	   }
 		$title = html_special_repace($_POST['title']);
 		$author = html_special_repace($_POST['author']);
-		$authorUrl = html_special_repace($_POST['url']);
 		$preview = html_special_repace($_POST['preview']);
 		$saveAs = $_POST['saveAs'] == 'true'; // Boolean
 		
@@ -39,15 +37,14 @@
 		// If new or changing the Blog name
 		if ($oldTitle == '' || $saveAs && !empty($_POST['oldTitle']) && strcmp($saveTitle, $oldTitle) != 0) {
 			echo 'new';
-			$success = $db->query("INSERT INTO `alexbbt_blog`.`blogs` (`title`, `author`, `authorUrl`, `preview`, `url`, `text`) 
-						VALUES ('". $title . "', '". $author ."', '". $authorUrl ."', '". $preview ."', '". $saveTitle ."', '". $text ."')"
+			$success = $db->query("INSERT INTO `alexbbt_blog`.`blogs` (`title`, `authorID`, `preview`, `url`, `text`) 
+						VALUES ('". $title . "', '". $author ."', '". $preview ."', '". $saveTitle ."', '". $text ."')"
 			);
 		} else {
 			echo 'save';
 			$success = $db->query("UPDATE `alexbbt_blog`.`blogs` 
 						SET `title` = '". $title . "',
-							`author` = '". $author ."',
-							`authorUrl` = '". $authorUrl ."',
+							`authorID` = '". $author ."',
 							`preview` = '". $preview ."',
 							`url` = '". $saveTitle ."',
 							`updated` = CURRENT_TIMESTAMP,
@@ -106,6 +103,7 @@
 		$github = $_POST['github'];
 		$copyrightName = $_POST['copyrightName'];
 		$copyrightUrl = $_POST['copyrightUrl'];
+		$copyrightYear = $_POST['copyrightYear'];
 
 		$sql = "UPDATE `alexbbt_blog`.`config` 
 					SET `title` = '". $title ."',
@@ -116,6 +114,7 @@
 						`github` = '". $github ."',
 						`copyrightName` = '". $copyrightName ."',
 						`copyrightUrl` = '". $copyrightUrl ."'
+						`copyrightYear` = '". $copyrightYear ."'
 					WHERE `config`.`id` = 1";
 
 		$success = $db->query($sql);

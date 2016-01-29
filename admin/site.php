@@ -61,6 +61,10 @@
             <input type="text" class="form-control" id="copyrightUrl" placeholder="site url" value="<?=$config['copyrightUrl']?>">
           </div>
           <div class="form-group col-xs-12">
+            <label for="">Copyright Year</label>
+            <input type="text" class="form-control" id="copyrightYear" placeholder="site url" value="<?=$config['copyrightYear']?>">
+          </div>
+          <div class="form-group col-xs-12">
             <a type="button" class="btn btn-warning" href="<?=$config[blogUrl]?>/admin">Cancel</a>
             <button type="button" class="btn btn-success save">Save</button>
           </div>
@@ -80,7 +84,8 @@
           facebook: $('#facebook').val(),
           github: $('#github').val(),
           copyrightName: $('#copyrightName').val(),
-          copyrightUrl: $('#copyrightUrl').val()
+          copyrightUrl: $('#copyrightUrl').val(),
+          copyrightYear: $('#copyrightYear').val()
         }, 
         function( data ) {
           // redirect to admin page
