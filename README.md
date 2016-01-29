@@ -16,11 +16,13 @@ Getting Started
 Example
 -------
 A working example can be found here: [https://www.bell-towne.com/blog_beta](https://www.bell-towne.com/blog_beta)
+
 You can access the Admin page, but nothing will be saved.
 
 Live Blog
 -------
 This is deprecated
+
 My active blog using this system can be found here: [https://blog.bell-towne.com/](https://blog.bell-towne.com/)
 
 Feel Free to Submit issues and Suggestions
