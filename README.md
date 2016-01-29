@@ -37,6 +37,7 @@ Database Schema
 =======
 
 table name: `config`
+
 | K  | Column Name   | Type         | Desription                            |
 |----|---------------|--------------|---------------------------------------|
 | PK | id            | int          |                                       |
@@ -51,6 +52,7 @@ table name: `config`
 
 
 table name: `authors`
+
 | K  | Column Name | Type        | Desription     |
 |----|-------------|-------------|----------------|
 | PK | authorID    | int         | author Number  |
@@ -59,6 +61,7 @@ table name: `authors`
 
 
 table name: `blogs`
+
 | K  | Column Name | Type           | Desription                      |
 |----|-------------|----------------|---------------------------------|
 |    | published   | tinyint        | boolean for publishing          |
