@@ -11,6 +11,10 @@ RewriteRule ^admin/site$ ./admin/site.php [L]
 
 RewriteCond %(REQUEST_FILENAME) !-f
 RewriteCond %(REQUEST_FILENAME) !-d
+RewriteRule ^admin/authors$ ./admin/authors.php [L]
+
+RewriteCond %(REQUEST_FILENAME) !-f
+RewriteCond %(REQUEST_FILENAME) !-d
 RewriteRule ^admin/new$ ./admin/edit.php?method=new [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f

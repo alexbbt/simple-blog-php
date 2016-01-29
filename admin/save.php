@@ -1,4 +1,5 @@
 <?php
+	print_r($_GET);
 	print_r($_POST);
 
 	$oldTitle = $_POST['oldTitle'];
@@ -119,6 +120,40 @@
 
 		$success = $db->query($sql);
 		print_r(($success) ? 'Success' : 'Failure');
+
+	} else if (!empty($_GET['author'])) {
+		// Return if missing param
+		if(empty($_POST['authorID'])  			&&
+		   empty($_POST['authorName'])		&&
+		   empty($_POST['authorURL']))
+		   {
+			echo "Something is missing!";
+			return false;
+	   }
+		$authorID = $_POST['authorID'];
+		$authorName = $_POST['authorName'];
+		$authorURL = $_POST['authorURL'];
+
+		$sql = "";
+
+		if ($authorID == '' && $authorName != '' && $authorURL != '') {
+			$sql = "INSERT INTO `alexbbt_blog`.`authors` (`authorName`, `authorURL`) 
+						VALUES ('". $authorName . "', '". $authorURL ."')";
+		} else if ($authorID != '' && $authorName != '' && $authorURL != '') {
+			$sql = "UPDATE `alexbbt_blog`.`authors` 
+					SET `authorName` = '". $authorName . "',
+							`authorURL` = '". $authorURL . "'
+					WHERE `authorID` = '". $authorID ."'";
+		} else if ($authorID != '' && !empty($_GET['deleteAuthor'])) {
+			$sql = "DELETE FROM `alexbbt_blog`.`authors` 
+					WHERE `authorID` = '". $authorID ."'";
+		}
+		print_r($sql);
+		$success = $db->query($sql);
+		print_r(($success) ? 'Success' : 'Failure');
+		if (!$success) {
+			print_r($db->errorInfo());
+		}
 
 	}
 
